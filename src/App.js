@@ -1,25 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+// To store data
+// localStorage.setItem('Name', 'Rahul');
+// To retrieve data
+// localStorage.getItem('Name');
+// To clear a specific item
+// localStorage.removeItem('Name');
+// To clear the whole data stored in localStorage
+// localStorage.clear();
+// @media only screen and (min-width: 600px) for tab
+//@media only screen and (min-width: 768px)  for desktop
+import {Switch, Route} from 'react-router-dom'
+import Login from './components/Login'
+import SignUp from './components/SignUp'
+import ProtectedRoute from './components/ProtectedRoute'
+import Home from './components/Home'
+import Account from './components/Account'
+import './App.css'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = () => (
+  <>
+  <Switch>
+    <Route exact path='/login' component={Login}/>
+    <Route exact path='/create-account' component={SignUp}/>
+    <ProtectedRoute exact path='/' component={Home}/>
+    <ProtectedRoute exact path='/account' component={Account}/>
+  </Switch>
+  </>
+)
 
-export default App;
+export default App
