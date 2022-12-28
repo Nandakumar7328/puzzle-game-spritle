@@ -1,3 +1,4 @@
+// https://spritle.onrender.com
 import {Component} from 'react'
 import { Link ,Redirect} from 'react-router-dom'
 import './index.css'
@@ -5,20 +6,31 @@ import './index.css'
 class Login extends Component {
     state = {email:'',password:'',erroMsg:'',isErrorShow:false}
 
-    onSubmitUserDetails = event => {
+    onSubmitUserDetails = async event => {
         event.preventDefault()
-        const {email,password} = this.state
-        console.log(password)
-        const getData = localStorage.getItem("UserAccountData")
-        const convert = JSON.parse(getData)
-        console.log(convert[0].result)
-        const emailId = convert[0].result.filter(eachData => (eachData.email === email))
-        const passwordUser = convert[0].result.filter(each => (each.password === password))
-        
-        if(emailId.length !== 0 && passwordUser.length !== 0 ){
+        const url = "https://spritle.onrender.com/login"
+        const {email,password} = this.state 
+        const userData = {
+            email:email,
+            password:password
+        }
+        const options = {
+            method:"POST",
+            body: JSON.stringify(userData),
+            headers: {
+                'Content-Type': 'application/json',
+                accept: 'application/json',
+              },
+        }
+        const response = await fetch(url,options)
+        const data = await response.json()
+        console.log(data)
+    
+        if( data.status === true){
             console.log("Login success")
             localStorage.setItem("Email",email)
             localStorage.setItem("Password",password)
+            localStorage.setItem("userId",data.userId)
             this.setState({isErrorShow:false})
         }else{
             console.log("Faild")

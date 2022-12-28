@@ -1,19 +1,43 @@
+import { Component } from 'react'
 import Header  from '../Header'
 import './index.css' 
 
-const Account = props => {
-    const getData = localStorage.getItem("UserAccountData")
-    const convert = JSON.parse(getData)
-    const {email} = convert[0].result[2]
-    const {username} = convert[0].result[0]
-    const {dateOfBirth}  = convert[0].result[1]
-    const {address} = convert[0].result[3]
-   const onClickDeleteAccount = () => {
-    localStorage.clear()
-    const {history} = props 
-    history.replace("/login")
-   }
+class Account extends Component {
+     state = {userData:[]}
 
+     componentDidMount(){
+      this.getUserData()
+     }
+
+     getUserData = async() => {
+       const userId = localStorage.getItem("userId")
+       const url = `https://spritle.onrender.com/user/${userId}`
+       const options = {
+        method:"GET"
+       }
+       const response = await fetch(url,options)
+       const data = await response.json()
+       if (response.ok === true){
+        this.setState({userData:data})
+       }
+     }
+
+     onClickDeleteAccount = async() => {
+      const userId = localStorage.getItem("userId")
+      const url = `https://spritle.onrender.com/delete/${userId}`
+      const options = {
+        method:"DELETE"
+       }
+        await fetch(url,options)
+        localStorage.clear()
+        const {history} = this.props 
+        history.replace("/login")
+       
+     }
+
+  render(){
+    const {userData} = this.state 
+    const {username,email,password,phonenumber} = userData 
     return(
       <div className='account-container'>
        <Header/>
@@ -22,12 +46,14 @@ const Account = props => {
        <hr className='line'/>
        <h1 className='account-heading'><span className='question'>Username: </span>{username}</h1>
        <h1 className='account-heading'><span className='question'>EmailId: </span>{email}</h1>
-       <h1 className='account-heading'><span className='question'>Date of Birth: </span>{dateOfBirth}</h1>
-       <h1 className='account-heading'><span className='question'>Address: </span>{address}</h1>
-       <button onClick={onClickDeleteAccount} type='button' className='delete-btn'>Delete</button>
+       <h1 className='account-heading'><span className='question'>Password: </span>{password}</h1>
+       <h1 className='account-heading'><span className='question'>Phone Number: </span>{phonenumber}</h1>
+       <button onClick={this.onClickDeleteAccount} type='button' className='delete-btn'>Delete</button>
        </div>
       </div>
     )
+  }
 }
+
 
 export default Account

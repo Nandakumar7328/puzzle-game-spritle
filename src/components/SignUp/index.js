@@ -6,35 +6,44 @@ class SignUp extends Component {
     state = {profile:"",username:"",dateOfBirth:"",email:"",address:"",phoneNumber:"",password:"" , confirmPassword:""} 
 
     
-    onSubmitAccoutDetails = event => {
+    onSubmitAccoutDetails = async event => {
         event.preventDefault()
-        const {profile,username,dateOfBirth,email,address,phoneNumber,password,confirmPassword} = this.state 
+        const {username,email,phoneNumber,password,confirmPassword} = this.state 
         localStorage.clear()
+        const  url = "https://spritle.onrender.com/adduser"
         
         if (password === confirmPassword){
             console.log("Correct")
             const userAccountDetails = 
-               { result : [ {username:username},
-                {dateOfBirth:dateOfBirth},
-                {email:email},
-                {address:address},
-                {phoneNumber:phoneNumber},
-                {password:password},
-                {profile:profile} 
-               ]
-               }
+              {
+                username:username,
+                password:password,
+                email:email,
+                phonenumber:phoneNumber,
+
+              }
+               
+            const options = {
+                method:"POST",
+                body: JSON.stringify(userAccountDetails),
+                headers: {
+                    'Content-Type': 'application/json',
+                    accept: 'application/json',
+                  },
+            }
+
+            const response = await fetch(url,options)
+            const data = await response.json()
+            console.log(data)
+
                emailjs.sendForm('service_qpebd4r', 'template_cd89qhj', event.target, 'lFKbxeuECl8alAjcV')
                .then((result) => {
                    console.log(result.text);
                }, (error) => {
                    console.log(error.text);
                });
-            const convertUserData = []
-            convertUserData.push(userAccountDetails)
-            localStorage.setItem("UserAccountData",JSON.stringify(convertUserData))
           const  {history} = this.props 
           history.replace("/login")
-
 
         }else{
 
